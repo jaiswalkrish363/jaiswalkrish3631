@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multimodal Disaster Intelligence Platform</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 40px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        h2 {
+            color: #1a365d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        form {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 8px;
+        }
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Emergency Pulse Animation */
+        @keyframes emergencyPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+                border-color: #ef4444;
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(239, 68, 68, 0);
+                border-color: #dc2626;
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+                border-color: #ef4444;
+            }
+        }
+
+        .normal-box {
+            margin-top: 25px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .critical-pulse-box {
+            margin-top: 25px;
+            background: #fff5f5;
+            border: 2px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            animation: emergencyPulse 1.5s infinite;
+        }
+
+        .result-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 1px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Multimodal Disaster Intelligence Platform</h2>
+        <p>Upload a real-world disaster image to extract forensic timestamps and trigger automated threat assessments.</p>
+        
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+            <input type="file" name="disaster_image" required><br>
+            <button type="submit">Analyze Situation</button>
+        </form>
+
+        {% if prediction %}
+            <!-- Dynamically changes to a glowing red pulsing box if the situation is critical -->
+            <div class="{% if 'CRITICAL' in prediction or 'EMERGENCY' in prediction or 'WARNING' in prediction %}critical-pulse-box{% else %}normal-box{% endif %}">
+                <h3>Live Intelligence Report:</h3>
+                <p><b>Threat Assessment:</b> {{ prediction }}</p>
+                <p><b>Verified Incident Time (EXIF):</b> {{ timestamp }}</p>
+                
+                {% if display_image %}
+                    <div>
+                        <img src="{{ url_for('uploaded_file', filename=display_image) }}" class="result-image">
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
